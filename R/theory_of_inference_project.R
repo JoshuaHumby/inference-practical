@@ -56,3 +56,25 @@ fit_marie_model <- function(surv) {
   
   initial_params <- c(initial_theta1, initial_theta2, initial_s2)
 }
+
+#NEW======================================
+
+# unified negative logarithmic likelihood function to be minimised
+marie_neg_log_likelihood <- function(params, data) {
+  # extract data
+  times <- data$times
+  init <- data$init
+  fin <- data$fin
+  neg_log_likelihood(params, marie_likelihood, times, init, fin)
+}
+
+# alternative initial parameters (subject to change)
+initial_params <- c(runif(1, 0, 1), runif(1, -1, 1), runif(1, 0, 1))
+
+# define function to fit Marie's model to data
+fit_marie_model <- function(initial_params, data) {
+  optim(par=initial_params, fn=marie_neg_log_likelihood, data=data)
+}
+
+# particular fit for surv data
+optimised_parameters = fit_marie_model(initial_params, surv)$par
